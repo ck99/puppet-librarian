@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <link rel="stylesheet" href="buttondown.css" type="text/css" />
+</head>
+<body>
+<h1 id="changelog">Changelog</h1>
+<h2 id="section">0.7.0</h2>
+<ul>
+<li>pg_hba: new type for managing PostgreSQL pg_hba.conf entries</li>
+<li>shellvar: add support for array values</li>
+<li>sysctl: add ‘apply’ parameter to change live kernel value (default: true)</li>
+<li>sysctl: add ‘val’ parameter alias for duritong/puppet-sysctl compatibility</li>
+<li>mailalias: fix quoting of pipe recipients, fixes #41</li>
+<li>devel: test Ruby 2.0</li>
+</ul>
+<h2 id="section-1">0.6.1</h2>
+<ul>
+<li>syslog: add rsyslog provider variant, requires Augeas 1.0.0</li>
+<li>all: fix ruby-augeas 0.3.0 compatibility on Ruby 1.9</li>
+<li>all: don’t throw error when target file doesn’t already exist</li>
+<li>kernel_parameter/grub: ensure partially present parameters will be removed</li>
+</ul>
+<h2 id="section-2">0.6.0</h2>
+<ul>
+<li>apache_setenv: new type for managing Apache HTTP SetEnv config options (Endre Karlson)</li>
+<li>puppet_auth: new type for managing Puppet’s auth.conf file</li>
+<li>shellvar: new type for managing /etc/{default,sysconfig}</li>
+<li>kernel_parameter: use EFI GRUB legacy config if present</li>
+<li>devel: replaced librarian-puppet with puppetlabs_spec_helper’s .fixtures.yml</li>
+<li>devel: use augparse –notypecheck for improved speed</li>
+</ul>
+<h2 id="section-3">0.5.3</h2>
+<ul>
+<li>sshd_config: reinstate separate name parameter</li>
+<li>docs: add sshd_config multiple keys example, fixes #27</li>
+</ul>
+<h2 id="section-4">0.5.2</h2>
+<ul>
+<li>sshd_config, sysctl: create entries after commented out entry</li>
+<li>host, mailalias: implement prefetch for performance</li>
+<li>sshd_config: remove separate name parameter, only use key as namevar</li>
+<li>docs: remove symlinks from docs/, fixes #25, improve README, rename LICENSE</li>
+<li>devel: improve idempotence logging</li>
+<li>devel: update to Augeas 1.0.0, test Puppet 3.1</li>
+</ul>
+<h2 id="section-5">0.5.1</h2>
+<ul>
+<li>all: fix library loading issue with <code>puppet apply</code></li>
+</ul>
+<h2 id="section-6">0.5.0</h2>
+<ul>
+<li>kernel_parameter: new type for managing kernel arguments in GRUB Legacy and GRUB 2 configs</li>
+<li>docs: documentation index, existing articles and numerous examples for all providers added</li>
+<li>docs: URLs changed to GitHub hercules-team organisation</li>
+<li>devel: files existence stubbed out in tests</li>
+<li>devel: Augeas submodule changed to point to GitHub</li>
+<li>devel: specs compatibility with 2.7.20 fixed</li>
+</ul>
+<h2 id="section-7">0.4.0</h2>
+<ul>
+<li>nrpe_command: new type for managing NRPE settings (Christian Kaenzig)</li>
+<li>syslog: new type for managing (r)syslog destinations (Raphaël Pinson)</li>
+</ul>
+<h2 id="section-8">0.3.1</h2>
+<ul>
+<li>all: fix missing require causing load errors</li>
+<li>sshd_config: store multiple values for a setting as multiple entries, e.g. multiple ListenAddress lines (issue #13)</li>
+<li>docs: minor fixes</li>
+<li>devel: test Puppet 3.0</li>
+</ul>
+<h2 id="section-9">0.3.0</h2>
+<ul>
+<li>sysctl: new type for managing sysctl.conf entries</li>
+<li>mounttab: add Solaris /etc/vfstab support</li>
+<li>mounttab: fix options property idempotency</li>
+<li>mounttab: fix key=value options in fstab instances</li>
+<li>host: fix comment and host_aliases properties idempotency</li>
+<li>all: log /augeas//error output when unable to save</li>
+<li>packaging: hard mount_providers dependency removed</li>
+<li>devel: augparse used to test providers against expected tree</li>
+<li>devel: augeas submodule included for testing against latest lenses</li>
+</ul>
+<h2 id="section-10">0.2.0</h2>
+<ul>
+<li>mounttab: new provider for mounttab type in puppetlabs-mount_providers (supports fstab only, no vfstab), mount_providers now a dependency</li>
+<li>devel: librarian-puppet used to install Puppet module dependencies</li>
+</ul>
+<h2 id="section-11">0.1.1</h2>
+<ul>
+<li>host: fix host_aliases param support pre-2.7</li>
+<li>sshd_config: find Match groups in instances/ralsh</li>
+<li>sshd_config: support arrays for ((Allow|Deny)(Groups|Users))|AcceptEnv|MACs</li>
+<li>sshd_config_subsystem: new type and provider (Raphaël Pinson)</li>
+<li>devel: use Travis CI, specify deps via Gemfile + bundler</li>
+<li>specs: fixes for 0.25 and 2.6 series</li>
+</ul>
+<h2 id="section-12">0.1.0</h2>
+<ul>
+<li>host: fix pre-2.7 compatibility when without comment property</li>
+<li>sshd_config: new type and provider (Raphaël Pinson)</li>
+<li>all: fix provider confine to enable use in same run as ruby-augeas install (Puppet #14822)</li>
+<li>devel: refactor common augopen code into utility class</li>
+<li>specs: fix both Ruby 1.8 and mocha 0.12 compatibility</li>
+</ul>
+<h2 id="section-13">0.0.4</h2>
+<ul>
+<li>host: fix handling of multiple host_aliases</li>
+<li>host: fix handling of empty comment string, now removes comment</li>
+<li>host: fix missing ensure and comment parameters in puppet resource, only return aliases if present</li>
+<li>mailalias: fix missing ensure parameter in puppet resource</li>
+<li>specs: added comprehensive test harness for both providers</li>
+</ul>
+<h2 id="section-14">0.0.3</h2>
+<ul>
+<li>all: add instances methods to enable <code>puppet resource</code></li>
+</ul>
+<h2 id="section-15">0.0.2</h2>
+<ul>
+<li>mailalias: new provider added for builtin mailalias type</li>
+</ul>
+<h2 id="section-16">0.0.1</h2>
+<ul>
+<li>host: new provider added for builtin host type</li>
+</ul>
+</body>
+</html>

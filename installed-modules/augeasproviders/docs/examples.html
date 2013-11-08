@@ -1,0 +1,705 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <link rel="stylesheet" href="buttondown.css" type="text/css" />
+</head>
+<body>
+<h1 id="manifest-examples">Manifest examples</h1>
+<p>Examples are given below for each of the providers and custom types in <code>augeasproviders</code>.</p>
+<ul>
+<li><a href="#apache_setenv-provider">apache_setenv provider</a></li>
+<li><a href="#host-provider">host provider</a></li>
+<li><a href="#kernel_parameter-provider">kernel_parameter provider</a></li>
+<li><a href="#mailalias-provider">mailalias provider</a></li>
+<li><a href="#mounttab-provider">mounttab provider</a></li>
+<li><a href="#nrpe_command-provider">nrpe_command provider</a></li>
+<li><a href="#pg_hba-provider">pg_hba provider</a></li>
+<li><a href="#puppet_auth-provider">puppet_auth provider</a></li>
+<li><a href="#shellvar-provider">shellvar provider</a></li>
+<li><a href="#sshd_config-provider">sshd_config provider</a></li>
+<li><a href="#sshd_config_subsystem-provider">sshd_config_subsystem provider</a></li>
+<li><a href="#sysctl-provider">sysctl provider</a></li>
+<li><a href="#syslog-provider">syslog provider</a></li>
+</ul>
+<h2 id="apache_setenv-provider">apache_setenv provider</h2>
+<p>This is a custom type and provider supplied by <code>augeasproviders</code>.</p>
+<h3 id="manage-simple-entry">manage simple entry</h3>
+<pre><code>apache_setenv { &quot;SPECIAL_PATH&quot;:
+  ensure =&gt; present,
+  value  =&gt; &quot;/foo/bin&quot;,
+}</code></pre>
+<h3 id="manage-entry-with-no-value">manage entry with no value</h3>
+<pre><code>apache_setenv { &quot;ENABLE_FOO&quot;:
+  ensure  =&gt; present,
+}</code></pre>
+<h3 id="delete-entry">delete entry</h3>
+<pre><code>apache_setenv { &quot;SPECIAL_PATH&quot;:
+  ensure =&gt; absent,
+}</code></pre>
+<h3 id="manage-entry-in-another-config-location">manage entry in another config location</h3>
+<pre><code>apache_setenv { &quot;SPECIAL_PATH&quot;:
+  ensure =&gt; present,
+  value  =&gt; &quot;/foo/bin&quot;,
+  target =&gt; &quot;/etc/httpd/conf.d/app.conf&quot;,
+}</code></pre>
+<h2 id="host-provider">host provider</h2>
+<p>This is a provider for a type distributed in Puppet core: <a href="http://docs.puppetlabs.com/references/stable/type.html#host">host type reference</a>.</p>
+<p>The provider needs to be explicitly given as <code>augeas</code> to use <code>augeasproviders</code>.</p>
+<p>The <code>comment</code> parameter is only supported on Puppet 2.7 and higher.</p>
+<h3 id="manage-simple-entry-1">manage simple entry</h3>
+<pre><code>host { &quot;example&quot;:
+  ensure   =&gt; present,
+  ip       =&gt; &quot;192.168.1.1&quot;,
+  provider =&gt; augeas,
+}</code></pre>
+<h3 id="manage-entry-with-aliases-and-comment">manage entry with aliases and comment</h3>
+<pre><code>host { &quot;example&quot;:
+  ensure       =&gt; present,
+  ip           =&gt; &quot;192.168.1.1&quot;,
+  host_aliases =&gt; [ &quot;foo-a&quot;, &quot;foo-b&quot; ],
+  comment      =&gt; &quot;test&quot;,
+  provider     =&gt; augeas,
+}</code></pre>
+<h3 id="manage-entry-in-another-location">manage entry in another location</h3>
+<pre><code>host { &quot;example&quot;:
+  ensure   =&gt; present,
+  ip       =&gt; &quot;192.168.1.1&quot;,
+  target   =&gt; &quot;/etc/anotherhosts&quot;,
+  provider =&gt; augeas,
+}</code></pre>
+<h3 id="delete-entry-1">delete entry</h3>
+<pre><code>host { &quot;iridium&quot;:
+  ensure   =&gt; absent,
+  provider =&gt; augeas,
+}</code></pre>
+<h3 id="remove-aliases">remove aliases</h3>
+<pre><code>host { &quot;iridium&quot;:
+  ensure       =&gt; present,
+  host_aliases =&gt; [],
+  provider     =&gt; augeas,
+}</code></pre>
+<h3 id="remove-comment">remove comment</h3>
+<pre><code>host { &quot;argon&quot;:
+  ensure   =&gt; present,
+  comment  =&gt; &quot;&quot;,
+  provider =&gt; augeas,
+}</code></pre>
+<h2 id="kernel_parameter-provider">kernel_parameter provider</h2>
+<p>This is a custom type and provider supplied by <code>augeasproviders</code>. It supports both GRUB Legacy (0.9x) and GRUB 2 configurations.</p>
+<h3 id="manage-parameter-without-value">manage parameter without value</h3>
+<pre><code>kernel_parameter { &quot;quiet&quot;:
+  ensure =&gt; present,
+}</code></pre>
+<h3 id="manage-parameter-with-value">manage parameter with value</h3>
+<pre><code>kernel_parameter { &quot;elevator&quot;:
+  ensure  =&gt; present,
+  value   =&gt; &quot;deadline&quot;,
+}</code></pre>
+<h3 id="manage-parameter-with-multiple-values">manage parameter with multiple values</h3>
+<pre><code>kernel_parameter { &quot;rd_LVM_LV&quot;:
+  ensure  =&gt; present,
+  value   =&gt; [&quot;vg/lvroot&quot;, &quot;vg/lvvar&quot;],
+}</code></pre>
+<h3 id="manage-parameter-on-certain-boot-types">manage parameter on certain boot types</h3>
+<p>Bootmode defaults to “all”, so settings are applied for all boot types usually.</p>
+<p>Apply only to normal boots:</p>
+<pre><code>kernel_parameter { &quot;quiet&quot;:
+  ensure   =&gt; present,
+  bootmode =&gt; &quot;normal&quot;,
+}</code></pre>
+<p>Only recovery mode boots (unsupported with GRUB 2):</p>
+<pre><code>kernel_parameter { &quot;quiet&quot;:
+  ensure   =&gt; present,
+  bootmode =&gt; &quot;recovery&quot;,
+}</code></pre>
+<h3 id="delete-entry-2">delete entry</h3>
+<pre><code>kernel_parameter { &quot;rhgb&quot;:
+  ensure =&gt; absent,
+}</code></pre>
+<h3 id="manage-parameter-in-another-config-location">manage parameter in another config location</h3>
+<pre><code>kernel_parameter { &quot;elevator&quot;:
+  ensure =&gt; present,
+  value  =&gt; &quot;deadline&quot;,
+  target =&gt; &quot;/mnt/boot/grub/menu.lst&quot;,
+}</code></pre>
+<h2 id="mailalias-provider">mailalias provider</h2>
+<p>This is a provider for a type distributed in Puppet core: <a href="http://docs.puppetlabs.com/references/stable/type.html#mailalias">mailalias type reference</a>.</p>
+<p>The provider needs to be explicitly given as <code>augeas</code> to use <code>augeasproviders</code>.</p>
+<h3 id="manage-simple-entry-2">manage simple entry</h3>
+<pre><code>mailalias { &quot;example&quot;:
+  ensure    =&gt; present,
+  recipient =&gt; &quot;bar&quot;,
+  provider  =&gt; augeas,
+}</code></pre>
+<h3 id="manage-entry-with-multiple-recipients">manage entry with multiple recipients</h3>
+<pre><code>mailalias { &quot;example&quot;:
+  ensure    =&gt; present,
+  recipient =&gt; [ &quot;fred&quot;, &quot;bob&quot; ],
+  provider  =&gt; augeas,
+}</code></pre>
+<h3 id="manage-entry-in-another-location-1">manage entry in another location</h3>
+<pre><code>mailalias { &quot;example&quot;:
+  ensure    =&gt; present,
+  recipient =&gt; &quot;bar&quot;,
+  target    =&gt; &quot;/etc/anotheraliases&quot;,
+  provider  =&gt; augeas,
+}</code></pre>
+<h3 id="delete-entry-3">delete entry</h3>
+<pre><code>mailalias { &quot;mailer-daemon&quot;:
+  ensure   =&gt; absent,
+  provider =&gt; augeas,
+}</code></pre>
+<h2 id="mounttab-provider">mounttab provider</h2>
+<p>This is a provider for a type distributed in the <a href="http://forge.puppetlabs.com/puppetlabs/mount_providers">puppetlabs-mount_providers module</a>.</p>
+<p>The provider needs to be explicitly given as <code>augeas</code> to use <code>augeasproviders</code>.</p>
+<p>If editing a vfstab entry, slightly different options need to be passed compared to a fstab entry.</p>
+<h3 id="manage-simple-fstab-entry">manage simple fstab entry</h3>
+<pre><code>mounttab { &quot;/mnt&quot;:
+  ensure   =&gt; present,
+  device   =&gt; &quot;/dev/myvg/mytest&quot;,
+  fstype   =&gt; &quot;ext4&quot;,
+  options  =&gt; &quot;defaults&quot;,
+  provider =&gt; augeas,
+}</code></pre>
+<h3 id="manage-full-fstab-entry">manage full fstab entry</h3>
+<pre><code>mounttab { &quot;/mnt&quot;:
+  ensure   =&gt; present,
+  device   =&gt; &quot;/dev/myvg/mytest&quot;,
+  fstype   =&gt; &quot;ext4&quot;,
+  options  =&gt; [&quot;nosuid&quot;, &quot;uid=12345&quot;],
+  dump     =&gt; &quot;1&quot;,
+  pass     =&gt; &quot;2&quot;,
+  provider =&gt; augeas,
+}</code></pre>
+<h3 id="manage-fstab-entry-with-default-options">manage fstab entry with default options</h3>
+<pre><code>mounttab { &quot;/mnt&quot;:
+  ensure   =&gt; present,
+  device   =&gt; &quot;/dev/myvg/mytest&quot;,
+  fstype   =&gt; &quot;ext4&quot;,
+  provider =&gt; augeas,
+}</code></pre>
+<h3 id="delete-fstab-entry">delete fstab entry</h3>
+<pre><code>mounttab { &quot;/&quot;:
+  ensure   =&gt; absent,
+  provider =&gt; augeas,
+}</code></pre>
+<h3 id="manage-entry-in-another-fstab-location">manage entry in another fstab location</h3>
+<pre><code>mounttab { &quot;/home&quot;:
+  ensure   =&gt; present,
+  device   =&gt; &quot;/dev/myvg/mytest&quot;,
+  target   =&gt; &quot;/etc/anotherfstab&quot;,
+  provider =&gt; augeas
+}</code></pre>
+<h3 id="manage-device-in-fstab-entry-only">manage device in fstab entry only</h3>
+<pre><code>mounttab { &quot;/home&quot;:
+  ensure   =&gt; present,
+  device   =&gt; &quot;/dev/myvg/mytest&quot;,
+  provider =&gt; augeas
+}</code></pre>
+<p>Note: dump and pass are both changing unless explicitly specified, see issue <a href="http://projects.puppetlabs.com/issues/16122">#16122</a>.</p>
+<h3 id="manage-fstype-in-fstab-entry-only">manage fstype in fstab entry only</h3>
+<pre><code>mounttab { &quot;/home&quot;:
+  ensure   =&gt; present,
+  fstype   =&gt; &quot;btrfs&quot;,
+  provider =&gt; augeas,
+}</code></pre>
+<h3 id="manage-options-in-fstab-entry-only">manage options in fstab entry only</h3>
+<pre><code>mounttab { &quot;/home&quot;:
+  ensure   =&gt; present,
+  options  =&gt; &quot;nosuid&quot;,
+  provider =&gt; augeas,
+}</code></pre>
+<h3 id="manage-complex-options-in-fstab-entry-only">manage complex options in fstab entry only</h3>
+<pre><code>mounttab { &quot;/home&quot;:
+  ensure   =&gt; present,
+  options  =&gt; [
+    &quot;nosuid&quot;,
+    &quot;uid=12345&quot;,
+    &#39;rootcontext=&quot;system_u:object_r:tmpfs_t:s0&quot;&#39;,
+  ],
+  provider =&gt; augeas,
+}</code></pre>
+<h3 id="remove-options-from-fstab-entry">remove options from fstab entry</h3>
+<pre><code>mounttab { &quot;/home&quot;:
+  ensure   =&gt; present,
+  options  =&gt; [],
+  provider =&gt; augeas,
+}</code></pre>
+<h3 id="manage-simple-vfstab-entry">manage simple vfstab entry</h3>
+<pre><code>mounttab { &quot;/mnt&quot;:
+  ensure   =&gt; present,
+  device   =&gt; &quot;/dev/dsk/c1t1d1s1&quot;,
+  fstype   =&gt; &quot;ufs&quot;,
+  atboot   =&gt; &quot;yes&quot;,
+  provider =&gt; augeas,
+}</code></pre>
+<h3 id="manage-full-vfstab-entry">manage full vfstab entry</h3>
+<pre><code>mounttab { &quot;/mnt&quot;:
+  ensure      =&gt; present,
+  device      =&gt; &quot;/dev/dsk/c1t1d1s1&quot;,
+  blockdevice =&gt; &quot;/dev/foo/c1t1d1s1&quot;,
+  fstype      =&gt; &quot;ufs&quot;,
+  pass        =&gt; &quot;2&quot;,
+  atboot      =&gt; &quot;yes&quot;,
+  options     =&gt; [ &quot;nosuid&quot;, &quot;nodev&quot; ],
+  provider    =&gt; augeas,
+}</code></pre>
+<h3 id="manage-vfstab-entry-with-default-options">manage vfstab entry with default options</h3>
+<pre><code>mounttab { &quot;/mnt&quot;:
+  ensure   =&gt; present,
+  device   =&gt; &quot;/dev/myvg/mytest&quot;,
+  fstype   =&gt; &quot;ext4&quot;,
+  provider =&gt; augeas,
+}</code></pre>
+<h3 id="delete-vfstab-entry">delete vfstab entry</h3>
+<pre><code>mounttab { &quot;/&quot;:
+  ensure   =&gt; absent,
+  provider =&gt; augeas,
+}</code></pre>
+<h3 id="remove-options-from-vfstab-entry">remove options from vfstab entry</h3>
+<pre><code>mounttab { &quot;/home&quot;:
+  ensure   =&gt; present,
+  options  =&gt; [],
+  provider =&gt; augeas,
+}</code></pre>
+<h2 id="nrpe_command-provider">nrpe_command provider</h2>
+<p>This is a custom type and provider supplied by <code>augeasproviders</code>.</p>
+<h3 id="manage-entry">manage entry</h3>
+<pre><code>nrpe_command { &quot;check_spec_test&quot;:
+  ensure  =&gt; present,
+  command =&gt; &quot;/usr/bin/check_my_thing -p &#39;some command with \&quot;multiple [types]\&quot; of quotes&#39; -x and-stuff&quot;,
+}</code></pre>
+<h3 id="delete-entry-4">delete entry</h3>
+<pre><code>nrpe_command { &quot;check_test&quot;:
+  ensure =&gt; absent,
+}</code></pre>
+<h2 id="pg_hba-provider">pg_hba provider</h2>
+<p>This is a custom type and provider supplied by <code>augeasproviders</code>.</p>
+<h3 id="composite-namevars">Composite namevars</h3>
+<p>This type supports composite namevars in order to easily specify the entry you want to manage. The format for composite namevars is:</p>
+<pre><code>local to &lt;user&gt; on &lt;database&gt; [in &lt;target&gt;]</code></pre>
+<p>if defining a local (socket) rule, or:</p>
+<pre><code>&lt;type&gt; to &lt;user&gt; on &lt;database&gt; from &lt;address&gt; [in &lt;target&gt;]</code></pre>
+<p>otherwise.</p>
+<p>In each form, <code>in &lt;target&gt;</code> is optional. You can also use a personalized namevar and specify all parameters manually.</p>
+<h3 id="manage-simple-local-entry">manage simple local entry</h3>
+<pre><code>pg_hba { &#39;local to all on all&#39;:
+  ensure =&gt; present,
+  method =&gt; &#39;md5&#39;,
+  target =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}</code></pre>
+<h3 id="manage-simple-host-entry">manage simple host entry</h3>
+<pre><code>pg_hba { &#39;host to all on all from 192.168.0.1&#39;:
+  ensure =&gt; present,
+  method =&gt; &#39;md5&#39;,
+  target =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}</code></pre>
+<h3 id="multiple-users-and-databases">multiple users and databases</h3>
+<pre><code>pg_hba { &#39;host to user1,user2 on db1,db2 from 192.168.0.1&#39;:
+  ensure =&gt; present,
+  method =&gt; &#39;md5&#39;,
+  target =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}
+
+pg_hba { &#39;Allow +foo and @bar to mydb and yourdb&#39;:
+  ensure   =&gt; present,
+  user     =&gt; [&#39;+foo&#39;, &#39;@bar&#39;],
+  database =&gt; [&#39;mydb&#39;, &#39;yourdb&#39;],
+  method   =&gt; &#39;md5&#39;,
+  target   =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}</code></pre>
+<h3 id="using-a-personalized-namevar">using a personalized namevar</h3>
+<pre><code>pg_hba { &#39;Default entry&#39;:
+  type     =&gt; &#39;local&#39;,
+  user     =&gt; &#39;all&#39;,
+  database =&gt; &#39;all&#39;,
+  method   =&gt; &#39;md5&#39;,
+  target   =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}</code></pre>
+<h3 id="pass-options-for-the-method">pass options for the method</h3>
+<pre><code>pg_hba { &#39;Default entry with option&#39;:
+  method  =&gt; &#39;ident&#39;,
+  options =&gt; { &#39;sameuser&#39; =&gt; undef },
+  target  =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}
+
+pg_hba { &#39;host to all on all from .dev.example.com in /etc/postgresql/9.1/main/pg_hba.conf&#39;:
+  method  =&gt; &#39;ldap&#39;,
+  options =&gt; {
+    &#39;ldapserver&#39; =&gt; &#39;auth.example.com&#39;,
+    &#39;ldaptls&#39;    =&gt; &#39;1&#39;,
+    &#39;ldapprefix&#39; =&gt; &#39;uid=&#39;,
+    &#39;ldapsuffix&#39; =&gt; &#39;,ou=people,dc=example,dc=com&#39;,
+  },
+}</code></pre>
+<h3 id="insert-entry-in-specific-position">insert entry in specific position</h3>
+<pre><code>pg_hba { &#39;local to all on all&#39;:
+  ensure   =&gt; present,
+  method   =&gt; &#39;md5&#39;,
+  position =&gt; &#39;before first entry&#39;,
+  target   =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}
+
+pg_hba { &#39;local to all on all&#39;:
+  ensure   =&gt; present,
+  method   =&gt; &#39;md5&#39;,
+  position =&gt; &#39;after last entry&#39;,
+  target   =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}
+
+pg_hba { &#39;local to all on all&#39;:
+  ensure   =&gt; present,
+  method   =&gt; &#39;md5&#39;,
+  position =&gt; &#39;before last local&#39;,
+  target   =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}
+
+pg_hba { &#39;local to all on all&#39;:
+  ensure   =&gt; present,
+  method   =&gt; &#39;md5&#39;,
+  position =&gt; &#39;after first hostssl&#39;,
+  target   =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}
+
+pg_hba { &#39;local to all on all&#39;:
+  ensure   =&gt; present,
+  method   =&gt; &#39;md5&#39;,
+  position =&gt; &#39;after first anyhost&#39;, # any type matching host.*
+  target   =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}
+
+pg_hba { &#39;local to all on all&#39;:
+  ensure   =&gt; present,
+  method   =&gt; &#39;md5&#39;,
+  position =&gt; &#39;before 5&#39;, # Before the fifth entry
+  target   =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}
+
+pg_hba { &#39;local to all on all&#39;:
+  ensure   =&gt; present,
+  method   =&gt; &#39;md5&#39;,
+  position =&gt; &#39;*[database=&quot;all&quot; and user=&quot;admin&quot;][1]&#39;, # First entry for database &#39;all&#39; and user &#39;admin&#39;
+  target   =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}</code></pre>
+<h3 id="ensure-position-is-correct">ensure position is correct</h3>
+<pre><code>pg_hba { &#39;local to all on all&#39;:
+  ensure   =&gt; positioned,
+  method   =&gt; &#39;md5&#39;,
+  position =&gt; &#39;before first entry&#39;,
+  target   =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}</code></pre>
+<h3 id="delete-entry-5">delete entry</h3>
+<pre><code>pg_hba { &#39;local to all on all&#39;:
+  ensure =&gt; absent,
+  target =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}
+
+pg_hba { &#39;host to all on all from 192.168.0.1&#39;:
+  ensure    =&gt; absent,
+  target =&gt; &#39;/etc/postgresql/9.1/main/pg_hba.conf&#39;,
+}</code></pre>
+<h2 id="puppet_auth-provider">puppet_auth provider</h2>
+<p>This is a custom type and provider supplied by <code>augeasproviders</code>.</p>
+<p>It requires the <code>Puppet_Auth.lns</code> lens, which is provided with versions of Augeas strictly greater than 0.10.0.</p>
+<h3 id="manage-simple-entry-3">manage simple entry</h3>
+<pre><code>puppet_auth { &#39;Deny /facts&#39;:
+  ensure        =&gt; present,
+  path          =&gt; &#39;/facts&#39;,
+  authenticated =&gt; &#39;any&#39;,
+}</code></pre>
+<h3 id="manage-regex-entry">manage regex entry</h3>
+<pre><code>puppet_auth { &#39;Deny ~ ^/facts/([^/]+)$&#39;:
+  ensure        =&gt; present,
+  path          =&gt; &#39;^/facts/([^/]+)$&#39;,
+  path_regex    =&gt; true,
+  authenticated =&gt; &#39;any&#39;,
+}</code></pre>
+<h3 id="add-multiple-environments">add multiple environments</h3>
+<pre><code>puppet_auth { &#39;Allow /facts for prod and dev environments from same client&#39;:
+  ensure        =&gt; present,
+  path          =&gt; &#39;/facts&#39;,
+  authenticated =&gt; &#39;any&#39;,
+  allow         =&gt; &#39;$1&#39;,
+  environments  =&gt; [&#39;prod&#39;, &#39;dev&#39;],
+}</code></pre>
+<h3 id="ensure-an-entry-is-before-a-given-path">ensure an entry is before a given path</h3>
+<p><code>ins_after</code> provides the opposite functionality, so an entry is created after a given path.</p>
+<pre><code>puppet_auth { &#39;Allow /facts before first denied rule&#39;:
+  ensure        =&gt; present,
+  path          =&gt; &#39;/facts&#39;,
+  authenticated =&gt; &#39;any&#39;,
+  allow         =&gt; &#39;*&#39;,
+  ins_before    =&gt; &#39;first deny&#39;,
+}</code></pre>
+<h3 id="delete-entry-6">delete entry</h3>
+<pre><code>puppet_auth { &#39;Remove /facts&#39;:
+  ensure =&gt; absent,
+  path   =&gt; &#39;/facts&#39;,
+}</code></pre>
+<h2 id="shellvar-provider">shellvar provider</h2>
+<p>This is a custom type and provider supplied by <code>augeasproviders</code>.</p>
+<h3 id="manage-simple-entry-4">manage simple entry</h3>
+<pre><code>shellvar { &quot;HOSTNAME&quot;:
+  ensure =&gt; present,
+  target =&gt; &quot;/etc/sysconfig/network&quot;,
+  value  =&gt; &quot;host.example.com&quot;,
+}
+
+shellvar { &quot;disable rsyncd&quot;:
+  ensure   =&gt; present,
+  target   =&gt; &quot;/etc/default/rsync&quot;,
+  variable =&gt; &quot;RSYNC_ENABLE&quot;,
+  value    =&gt; &quot;false&quot;,
+}
+
+shellvar { &quot;ntpd options&quot;:
+  ensure   =&gt; present,
+  target   =&gt; &quot;/etc/sysconfig/ntpd&quot;,
+  variable =&gt; &quot;OPTIONS&quot;,
+  value    =&gt; &quot;-g -x -c /etc/myntp.conf&quot;,
+}</code></pre>
+<h3 id="manage-entry-with-comment">manage entry with comment</h3>
+<pre><code>shellvar { &quot;HOSTNAME&quot;:
+  ensure  =&gt; present,
+  target  =&gt; &quot;/etc/sysconfig/network&quot;,
+  comment =&gt; &quot;My server&#39;s hostname&quot;,
+  value   =&gt; &quot;host.example.com&quot;,
+}</code></pre>
+<h3 id="force-quoting-style">force quoting style</h3>
+<p>Values needing quotes will automatically get them, but they can also be explicitly enabled. Unfortunately the provider doesn’t help with quoting the values themselves.</p>
+<pre><code>shellvar { &quot;RSYNC_IONICE&quot;:
+  ensure   =&gt; present,
+  target   =&gt; &quot;/etc/default/rsync&quot;,
+  value    =&gt; &quot;-c3&quot;,
+  quoted   =&gt; &quot;single&quot;,
+}</code></pre>
+<h3 id="delete-entry-7">delete entry</h3>
+<pre><code>shellvar { &quot;RSYNC_IONICE&quot;:
+  ensure =&gt; absent,
+  target =&gt; &quot;/etc/default/rsync&quot;,
+}</code></pre>
+<h3 id="remove-comment-from-entry">remove comment from entry</h3>
+<pre><code>shellvar { &quot;HOSTNAME&quot;:
+  ensure  =&gt; present,
+  target  =&gt; &quot;/etc/sysconfig/network&quot;,
+  comment =&gt; &quot;&quot;,
+}</code></pre>
+<h3 id="array-values">array values</h3>
+<p>You can pass array values to the type.</p>
+<p>There are two ways of rendering array values, and the behavior is set using the <code>array_type</code> parameter. <code>array_type</code> takes three possible values:</p>
+<ul>
+<li><code>auto</code> (default): detects the type of the existing variable, defaults to <code>string</code>;</li>
+<li><code>string</code>: renders the array as a string, with a space as element separator;</li>
+<li><code>array</code>: renders the array as a shell array.</li>
+</ul>
+<p>For example:</p>
+<pre><code>shellvar { &quot;PORTS&quot;:
+  ensure     =&gt; present,
+  target     =&gt; &quot;/etc/default/puppetmaster&quot;,
+  value      =&gt; [&quot;18140&quot;, &quot;18141&quot;, &quot;18142&quot;],
+  array_type =&gt; &quot;auto&quot;,
+}</code></pre>
+<p>will create <code>PORTS=&quot;18140 18141 18142&quot;</code> by default, and will change <code>PORTS=(123)</code> to <code>PORTS=(&quot;18140&quot; &quot;18141&quot; &quot;18142&quot;)</code>.</p>
+<pre><code>shellvar { &quot;PORTS&quot;:
+  ensure     =&gt; present,
+  target     =&gt; &quot;/etc/default/puppetmaster&quot;,
+  value      =&gt; [&quot;18140&quot;, &quot;18141&quot;, &quot;18142&quot;],
+  array_type =&gt; &quot;string&quot;,
+}</code></pre>
+<p>will create <code>PORTS=&quot;18140 18141 18142&quot;</code> by default, and will change <code>PORTS=(123)</code> to <code>PORTS=&quot;18140 18141 18142&quot;</code>.</p>
+<pre><code>shellvar { &quot;PORTS&quot;:
+  ensure     =&gt; present,
+  target     =&gt; &quot;/etc/default/puppetmaster&quot;,
+  value      =&gt; [&quot;18140&quot;, &quot;18141&quot;, &quot;18142&quot;],
+  array_type =&gt; &quot;array&quot;,
+}</code></pre>
+<p>will create <code>PORTS=(&quot;18140&quot; &quot;18141&quot; &quot;18142&quot;)</code> by default, and will change <code>PORTS=123</code> to <code>PORTS=(18140 18141 18142)</code>.</p>
+<p>Quoting is honored for arrays:</p>
+<ul>
+<li>When using the string behavior, quoting is global to the string;</li>
+<li>When using the array behavior, each value in the array is quoted as requested. ## sshd_config provider</li>
+</ul>
+<p>This is a custom type and provider supplied by <code>augeasproviders</code>.</p>
+<h3 id="manage-simple-entry-5">manage simple entry</h3>
+<pre><code>sshd_config { &quot;PermitRootLogin&quot;:
+  ensure =&gt; present,
+  value  =&gt; &quot;yes&quot;,
+}</code></pre>
+<h3 id="manage-array-entry">manage array entry</h3>
+<pre><code>sshd_config { &quot;AllowGroups&quot;:
+  ensure =&gt; present,
+  value  =&gt; [&quot;sshgroups&quot;, &quot;admins&quot;],
+}</code></pre>
+<h3 id="manage-entry-in-a-match-block">manage entry in a Match block</h3>
+<pre><code>sshd_config { &quot;X11Forwarding&quot;:
+  ensure    =&gt; present,
+  condition =&gt; &quot;Host foo User root&quot;,
+  value     =&gt; &quot;yes&quot;,
+}
+
+sshd_config { &quot;AllowAgentForwarding&quot;:
+  ensure    =&gt; present,
+  condition =&gt; &quot;Host *.example.net&quot;,
+  value     =&gt; &quot;yes&quot;,
+}</code></pre>
+<h3 id="manage-entries-with-same-name-in-different-blocks">manage entries with same name in different blocks</h3>
+<pre><code>sshd_config { &quot;X11Forwarding global&quot;:
+  ensure =&gt; present,
+  key    =&gt; &quot;X11Forwarding&quot;,
+  value  =&gt; &quot;no&quot;,
+}
+
+sshd_config { &quot;X11Forwarding foo&quot;:
+  ensure    =&gt; present,
+  key       =&gt; &quot;X11Forwarding&quot;,
+  condition =&gt; &quot;User foo&quot;,
+  value     =&gt; &quot;yes&quot;,
+}
+
+sshd_config { &quot;X11Forwarding root&quot;:
+  ensure    =&gt; present,
+  key       =&gt; &quot;X11Forwarding&quot;,
+  condition =&gt; &quot;User root&quot;,
+  value     =&gt; &quot;no&quot;,
+}</code></pre>
+<h3 id="delete-entry-8">delete entry</h3>
+<pre><code>sshd_config { &quot;PermitRootLogin&quot;:
+  ensure =&gt; absent,
+}
+
+sshd_config { &quot;AllowAgentForwarding&quot;:
+  ensure    =&gt; absent,
+  condition =&gt; &quot;Host *.example.net User *&quot;,
+}</code></pre>
+<h3 id="manage-entry-in-another-sshd_config-location">manage entry in another sshd_config location</h3>
+<pre><code>sshd_config { &quot;PermitRootLogin&quot;:
+  ensure =&gt; present,
+  value  =&gt; &quot;yes&quot;,
+  target =&gt; &quot;/etc/ssh/another_sshd_config&quot;,
+}</code></pre>
+<h2 id="sshd_config_subsystem-provider">sshd_config_subsystem provider</h2>
+<p>This is a custom type and provider supplied by <code>augeasproviders</code>.</p>
+<h3 id="manage-entry-1">manage entry</h3>
+<pre><code>sshd_config_subsystem { &quot;sftp&quot;:
+  ensure  =&gt; present,
+  command =&gt; &quot;/usr/lib/openssh/sftp-server&quot;,
+}</code></pre>
+<h3 id="delete-entry-9">delete entry</h3>
+<pre><code>sshd_config_subsystem { &quot;sftp&quot;:
+  ensure =&gt; absent,
+}</code></pre>
+<h3 id="manage-entry-in-another-sshd_config-location-1">manage entry in another sshd_config location</h3>
+<pre><code>sshd_config_subsystem { &quot;sftp&quot;:
+  ensure  =&gt; present,
+  command =&gt; &quot;/usr/lib/openssh/sftp-server&quot;,
+  target  =&gt; &quot;/etc/ssh/another_sshd_config&quot;,
+}</code></pre>
+<h2 id="sysctl-provider">sysctl provider</h2>
+<p>This is a custom type and provider supplied by <code>augeasproviders</code>.</p>
+<h3 id="manage-simple-entry-6">manage simple entry</h3>
+<pre><code>sysctl { &quot;net.ipv4.ip_forward&quot;:
+  ensure =&gt; present,
+  value  =&gt; &quot;1&quot;,
+}</code></pre>
+<h3 id="manage-entry-with-comment-1">manage entry with comment</h3>
+<pre><code>sysctl { &quot;net.ipv4.ip_forward&quot;:
+  ensure  =&gt; present,
+  value   =&gt; &quot;1&quot;,
+  comment =&gt; &quot;test&quot;,
+}</code></pre>
+<h3 id="delete-entry-10">delete entry</h3>
+<pre><code>sysctl { &quot;kernel.sysrq&quot;:
+  ensure =&gt; absent,
+}</code></pre>
+<h3 id="remove-comment-from-entry-1">remove comment from entry</h3>
+<pre><code>sysctl { &quot;kernel.sysrq&quot;:
+  ensure  =&gt; present,
+  comment =&gt; &quot;&quot;,
+}</code></pre>
+<h3 id="manage-entry-in-another-sysctl.conf-location">manage entry in another sysctl.conf location</h3>
+<pre><code>sysctl { &quot;net.ipv4.ip_forward&quot;:
+  ensure =&gt; present,
+  value  =&gt; &quot;1&quot;,
+  target =&gt; &quot;/etc/sysctl.d/forwarding.conf&quot;,
+}</code></pre>
+<h3 id="do-not-update-value-with-the-sysctl-command">do not update value with the <code>sysctl</code> command</h3>
+<pre><code>sysctl { &quot;net.ipv4.ip_forward&quot;:
+  ensure =&gt; present,
+  value  =&gt; &quot;1&quot;,
+  apply  =&gt; false,
+}</code></pre>
+<h2 id="syslog-provider">syslog provider</h2>
+<p>This is a custom type, with two providers supplied by <code>augeasproviders</code>. A <code>syslog</code> provider handles basic syslog configs, while an <code>rsyslog</code> provider handles the extended rsyslog config (this requires Augeas 1.0.0).</p>
+<h3 id="manage-entry-2">manage entry</h3>
+<pre><code>syslog { &quot;my test&quot;:
+  ensure      =&gt; present,
+  facility    =&gt; &quot;local2&quot;,
+  level       =&gt; &quot;*&quot;,
+  action_type =&gt; &quot;file&quot;,
+  action      =&gt; &quot;/var/log/test.log&quot;,
+}</code></pre>
+<h3 id="manage-entry-with-no-file-sync">manage entry with no file sync</h3>
+<pre><code>syslog { &quot;cron.*&quot;:
+  ensure      =&gt; present,
+  facility    =&gt; &quot;cron&quot;,
+  level       =&gt; &quot;*&quot;,
+  action_type =&gt; &quot;file&quot;,
+  action      =&gt; &quot;/var/log/cron&quot;,
+  no_sync     =&gt; true,
+}</code></pre>
+<h3 id="manage-remote-hostname-entry">manage remote hostname entry</h3>
+<pre><code>syslog { &quot;my test&quot;:
+  ensure      =&gt; present,
+  facility    =&gt; &quot;local2&quot;,
+  level       =&gt; &quot;*&quot;,
+  action_type =&gt; &quot;hostname&quot;,
+  action      =&gt; &quot;centralserver&quot;,
+}</code></pre>
+<h3 id="manage-user-destination-entry">manage user destination entry</h3>
+<pre><code>syslog { &quot;my test&quot;:
+  ensure      =&gt; present,
+  facility    =&gt; &quot;local2&quot;,
+  level       =&gt; &quot;*&quot;,
+  action_type =&gt; &quot;user&quot;,
+  action      =&gt; &quot;root&quot;,
+}</code></pre>
+<h3 id="manage-program-entry">manage program entry</h3>
+<pre><code>syslog { &quot;my test&quot;:
+  ensure      =&gt; present,
+  facility    =&gt; &quot;local2&quot;,
+  level       =&gt; &quot;*&quot;,
+  action_type =&gt; &quot;program&quot;,
+  action      =&gt; &quot;/usr/bin/foo&quot;,
+}</code></pre>
+<h3 id="delete-entry-11">delete entry</h3>
+<pre><code>syslog { &quot;mail.*&quot;:
+  ensure      =&gt; absent,
+  facility    =&gt; &quot;mail&quot;,
+  level       =&gt; &quot;*&quot;,
+  action_type =&gt; &quot;file&quot;,
+  action      =&gt; &quot;/var/log/maillog&quot;,
+}</code></pre>
+<h3 id="manage-entry-in-rsyslog">manage entry in rsyslog</h3>
+<pre><code>syslog { &quot;my test&quot;:
+  ensure      =&gt; present,
+  facility    =&gt; &quot;local2&quot;,
+  level       =&gt; &quot;*&quot;,
+  action_type =&gt; &quot;file&quot;,
+  action      =&gt; &quot;/var/log/test.log&quot;,
+  provider    =&gt; &quot;rsyslog&quot;,
+}</code></pre>
+<h3 id="manage-entry-in-another-syslog-location">manage entry in another syslog location</h3>
+<pre><code>syslog { &quot;my test&quot;:
+  ensure      =&gt; present,
+  facility    =&gt; &quot;local2&quot;,
+  level       =&gt; &quot;*&quot;,
+  action_type =&gt; &quot;file&quot;,
+  action      =&gt; &quot;/var/log/test.log&quot;,
+  target      =&gt; &quot;/etc/mysyslog.conf&quot;,
+}</code></pre>
+</body>
+</html>

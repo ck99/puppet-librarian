@@ -1,0 +1,4 @@
+#! /bin/bash
+
+cd /root/.server-bootstrap
+git pull && /usr/local/bin/papply

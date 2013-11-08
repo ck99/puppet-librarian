@@ -1,0 +1,28 @@
+{
+  "name": "example42-java",
+  "version": "2.0.3",
+  "summary": "Puppet module for java",
+  "author": "Alessandro Franceschi",
+  "description": "This module installs and manages java",
+  "dependencies": [
+    {
+      "name": "example42/puppi",
+      "version_requirement": ">=2.0.0"
+    }
+  ],
+  "types": [
+
+  ],
+  "checksums": {
+    "LICENSE": "a300b604c66de62cf6e923cca89c9d83",
+    "Modulefile": "1d4bea277aa0abe22ff48d2a50591ff8",
+    "README.md": "d41d8cd98f00b204e9800998ecf8427e",
+    "Rakefile": "e90d68823ff237c89224eb139f8926ad",
+    "manifests/init.pp": "555be8882470b13abcbf8a0f91e28934",
+    "manifests/install.pp": "f9129ee87c18b640bbfbd91e4084c89a",
+    "manifests/params.pp": "9623815e2ddf78487ec9aeca27d24d3c"
+  },
+  "source": "https://github.com/example42/puppet-java",
+  "project_page": "http://www.example42.com",
+  "license": "Apache2"
+}
